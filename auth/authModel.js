@@ -5,7 +5,7 @@ function get(id) {
 
   if (id) query.where("u.user_id", id).first();
 
-  return query.select('user_id', 'name', 'username', 'phone');
+  return query.select('user_id', 'first_name', 'last_name', 'email', 'phone');
 }
 
 function insert(user) {

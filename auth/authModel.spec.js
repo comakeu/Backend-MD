@@ -7,15 +7,16 @@ beforeEach(() => {
 });
 
 const testUser = {
-  name: "ALengthyName",
-  username: "emkay",
+  first_name: "ALengthyName",
+  last_name: "aLastName",
+  email: "emkay@mail.com",
   password: "ALongAssPassword",
   phone: "01299345"
 };
 
 describe("auth endpoints", () => {
   describe("register endpoint", () => {
-    test("/register returns 200 OK", () => {
+    test("/register returns 201 Created", () => {
       return request(server)
         .post("/api/auth/register")
         .send(testUser)
@@ -28,7 +29,7 @@ describe("auth endpoints", () => {
 
       console.log(process.env.DB_ENV);
 
-      expect(response.body.data.name).toBe(testUser.name);
+      expect(response.body.data.email).toBe(testUser.email);
       expect(response.body.data.phone).toBe(testUser.phone);
     });
     // test("/register does not store password in plain text", async () => {
@@ -63,7 +64,7 @@ describe("auth endpoints", () => {
 
       expect(response.body.token).not.toBe(null || undefined);
     });
-    test("/login returns user whose username was passed in", async () => {
+    test("/login returns user whose email was passed in", async () => {
       await request(server)
         .post("/api/auth/register")
         .send(testUser);
@@ -72,7 +73,7 @@ describe("auth endpoints", () => {
         .post("/api/auth/login")
         .send(testUser);
 
-      expect(response.body.data.username).toBe(testUser.username);
+      expect(response.body.data.email).toBe(testUser.email);
     });
   });
 });

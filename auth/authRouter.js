@@ -18,8 +18,8 @@ auth.post("/register", bodyVal, (req, res) => {
 });
 
 auth.post("/login", loginVal, (req, res) => {
-  const { username, password } = req.valUser;
-  db.findBy({ username }).then(user => {
+  const { email, password } = req.valUser;
+  db.findBy({ email }).then(user => {
     if (user && bcrypt.compareSync(password, user.password)) {
       const token = generateToken(user);
       delete user.password
@@ -40,7 +40,7 @@ auth.post("/login", loginVal, (req, res) => {
 function generateToken(user) {
   const payload = {
     subject: user.id,
-    username: user.username,
+    email: user.email,
     name: user.name
   };
   const options = {

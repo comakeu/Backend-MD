@@ -3,10 +3,11 @@ exports.up = function(knex) {
     .createTable("users", table => {
       table.increments("user_id");
 
-      table.text("name").notNullable();
+      table.text("first_name").notNullable();
+      table.text("last_name").notNullable();
 
       table
-        .text("username")
+        .text("email")
         .notNullable()
         .unique();
 
@@ -25,7 +26,7 @@ exports.up = function(knex) {
       table
         .integer("user_id")
         .references("user_id")
-        .inTable("schemes")
+        .inTable("users")
         .onUpdate("CASCADE")
         .onDelete("CASCADE");
     });

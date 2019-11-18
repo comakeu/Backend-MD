@@ -11,7 +11,7 @@ function get(id) {
 function insert(user) {
   return db("users")
     .insert(user)
-    .then(([id]) => this.get(id));
+    // .then(([id]) => this.get(id));
 }
 
 function findBy(filter){

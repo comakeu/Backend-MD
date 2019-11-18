@@ -20,8 +20,8 @@ exports.up = function(knex) {
       table.increments("issue_id");
 
       table.text("description");
-      table.integer("longitude");
-      table.integer("latitude");
+      table.decimal("longitude");
+      table.decimal("latitude");
 
       table
         .integer("user_id")

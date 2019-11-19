@@ -36,7 +36,7 @@ issues.post("/", issueBodyValidator, restricted, (req, res) => {
     );
 });
 
-issues.delete("/:id", issueIdValidator, (req, res) => {
+issues.delete("/:id", issueIdValidator, restricted, (req, res) => {
   db.remove(req.params.id).then(flag => {
     if (flag) {
       res.status(200).json({
@@ -48,7 +48,7 @@ issues.delete("/:id", issueIdValidator, (req, res) => {
   });
 });
 
-issues.put("/:id", issueIdValidator, issueBodyValidator, (req, res) => {
+issues.put("/:id", issueIdValidator, issueBodyValidator, restricted, (req, res) => {
   db.update(req.params.id, req.valIssue).then(issue => {
     res
       .status(200)

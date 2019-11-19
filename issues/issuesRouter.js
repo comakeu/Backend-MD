@@ -28,15 +28,48 @@ issues.post("/", issueBodyValidator, restricted, (req, res) => {
       });
     })
     .catch(err =>
-      res
-        .status(500)
-        .json({
-          error: true,
-          message: `An error occurred: ${err.message}`,
-          data: err
-        })
+      res.status(500).json({
+        error: true,
+        message: `An error occurred: ${err.message}`,
+        data: err
+      })
     );
 });
+
+issues.delete("/:id", issueIdValidator, (req, res) => {
+  db.remove(req.params.id).then(flag => {
+    if (flag) {
+      res
+        .status(200)
+        .json({
+          error: false,
+          message: "Deleted successfully",
+          data: req.valIssue
+        });
+    }
+  });
+});
+
+function issueIdValidator(req, res, next) {
+  const { id } = req.params;
+
+  db.get(id)
+    .then(issue => {
+      if (issue) {
+        req.valIssue = issue;
+        next();
+      } else {
+        res.status(404).json({
+          message: "Issue not found"
+        });
+      }
+    })
+    .catch(error => {
+      res.status(500).json({
+        message: "id not found: " + error.message
+      });
+    });
+}
 
 function issueBodyValidator(req, res, next) {
   const { description, latitude, longitude, user_id } = req.body;

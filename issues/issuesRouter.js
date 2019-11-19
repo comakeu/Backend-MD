@@ -39,14 +39,20 @@ issues.post("/", issueBodyValidator, restricted, (req, res) => {
 issues.delete("/:id", issueIdValidator, (req, res) => {
   db.remove(req.params.id).then(flag => {
     if (flag) {
-      res
-        .status(200)
-        .json({
-          error: false,
-          message: "Deleted successfully",
-          data: req.valIssue
-        });
+      res.status(200).json({
+        error: false,
+        message: "Deleted successfully",
+        data: req.valIdIssue
+      });
     }
+  });
+});
+
+issues.put("/:id", issueIdValidator, issueBodyValidator, (req, res) => {
+  db.update(req.params.id, req.valIssue).then(issue => {
+    res
+      .status(200)
+      .json({ error: false, message: "Updated successfully", data: issue });
   });
 });
 
@@ -56,7 +62,7 @@ function issueIdValidator(req, res, next) {
   db.get(id)
     .then(issue => {
       if (issue) {
-        req.valIssue = issue;
+        req.valIdIssue = issue;
         next();
       } else {
         res.status(404).json({

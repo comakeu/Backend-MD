@@ -23,7 +23,12 @@ function remove(issue_id) {
 function update(issue_id, changes) {
   return db("issues as i")
     .where("issue_id", issue_id)
-    .update(changes);
+    .update(changes)
+    .then(flag => {
+      if (flag) {
+        return this.get(issue_id);
+      }
+    });
 }
 
 function findWhere(filter) {

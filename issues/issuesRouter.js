@@ -1,5 +1,6 @@
 const issues = require("express").Router();
 const db = require("./issuesModel");
+const restricted = require("../utils/restrictedMiddleware");
 
 issues.get("/", (req, res) => {
   db.get()
@@ -17,4 +18,42 @@ issues.get("/", (req, res) => {
     );
 });
 
-module.exports = issues
+issues.post("/", issueBodyValidator, restricted, (req, res) => {
+  db.add(req.valIssue)
+    .then(issue => {
+      res.status(201).json({
+        error: false,
+        message: "Created issue successfully",
+        data: issue
+      });
+    })
+    .catch(err =>
+      res
+        .status(500)
+        .json({
+          error: true,
+          message: `An error occurred: ${err.message}`,
+          data: err
+        })
+    );
+});
+
+function issueBodyValidator(req, res, next) {
+  const { description, latitude, longitude, user_id } = req.body;
+
+  if (!Object.keys(req.body).length) {
+    res.status(404).json({ error: true, message: "Request body missing" });
+  } else if (!description || !latitude || !longitude || !user_id) {
+    res.status(404).json({ error: true, message: "Required param(s) missing" });
+  } else if (
+    typeof latitude !== typeof longitude ||
+    typeof latitude !== "number"
+  ) {
+    res.status(404).json({ error: true, message: "Incorrect data type" });
+  } else {
+    req.valIssue = { description, latitude, longitude, user_id };
+    next();
+  }
+}
+
+module.exports = issues;

@@ -3,12 +3,26 @@ const server = require("../api/server");
 const db = require("../database/dbConfig");
 
 beforeEach(() => {
-  db("issues").truncate();
+  return db("issues").truncate();
+  // await db("users").truncate();
 });
 
-const testUser = {
-  email: "emkay5sasa@mail.com",
-  password: "ALongAssPassword"
+beforeEach(() => {
+  return db("users").truncate();
+  // await db("users").truncate();
+});
+
+const testUserLogin = {
+  email: "emkay@mail.com",
+  password: "ALongAssPassword",
+};
+
+const testUserRegister = {
+  first_name: "ALengthyName",
+  last_name: "aLastName",
+  email: "emkay@mail.com",
+  password: "ALongAssPassword",
+  phone: "01299345"
 };
 
 const testIssue = {
@@ -41,21 +55,51 @@ describe("Issues endpoints", () => {
         .expect(401)
         .expect({ error: true, message: "No credentials passed" });
     });
-    test("returns 201 Created", async () => {
-      const response = await request(server).post('api/auth/login').send(testUser)
-      const { token } = response.body
+    // test("returns 201 Created", async () => {
+    //   await request(server)
+    //     .post("/api/auth/register")
+    //     .send(testUserRegister);
 
-      request(server).post('api/issues').send(testIssue).set('Authorization', token)
-      .expect(201)
-    });
-    test("returns project created", async () => {
-      const response = await request(server).post('api/auth/login').send(testUser)
-      const { token } = response.body
+    //   const response = await request(server)
+    //     .post("/api/auth/login")
+    //     .send(testUserLogin);
 
-      const postResponse = await request(server).post('api/issues').send(testIssue).set('Authorization', token)
-      delete postResponse.body.project_id
-      const projectCreated = postResponse.body
-      expect(postResponse.body).toEqual(projectCreated)
-    });
+    //   const { token } = response.body;
+
+    //   // console.log(response.body);
+
+    //   request(server)
+    //     .post("/api/issues")
+    //     .send(testIssue)
+    //     .set("Authorization", token)
+    //     .expect(201);
+    // });
+    // test("returns project created", async () => {
+
+    //  const reg =  await request(server)
+    //     .post("/api/auth/register")
+    //     .send(testUserRegister);
+
+    //   const response = await request(server)
+    //     .post("/api/auth/login")
+    //     .send(testUserLogin);
+
+    //   const { token } = response.body;
+
+    //   // testIssue.user_id = reg.body.data.user_id
+
+    //   const postResponse = await request(server)
+    //     .post("/api/issues")
+    //     .set("Authorization", token)
+    //     .send(testIssue)
+
+    //     console.log(postResponse.body);
+
+        
+    //   delete postResponse.body.data.issue_id;
+
+    //   const projectCreated = postResponse.body.data;
+    //   expect(projectCreated).toEqual(testIssue);
+    // });
   });
 });

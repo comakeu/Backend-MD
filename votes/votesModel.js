@@ -7,17 +7,17 @@ module.exports = {
 };
 
 function createVote(user_id, issue_id) {
-  return db("issues").insert({ issue_id, user_id });
+  return db("votes").insert({ issue_id, user_id });
 }
 
 function removeVote(user_id, issue_id) {
-  return db("issues")
+  return db("votes")
     .where("issue_id", issue_id)
     .where("user_id", user_id)
     .del();
 }
 
 function getWhere(filter){
-    return db('issues')
+    return db('votes')
     .where(filter)
 }

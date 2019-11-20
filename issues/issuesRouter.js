@@ -1,15 +1,15 @@
 const issues = require("express").Router();
-const db = require("./issuesModel");
+const issuesModel = require("./issuesModel");
 const restricted = require("../utils/restrictedMiddleware");
 
 issues.get("/", (req, res) => {
-  db.get()
+  issuesModel.get()
     .then(([issues, allVotes]) => {
       issues.forEach(i => {
-        const issueVotes = allVotes.filter(v => v.issue_id === i.issue_id)
-        i.total_votes = issueVotes.length
+        const issueVotes = allVotes.filter(v => v.issue_id === i.issue_id);
+        i.total_votes = issueVotes.length;
         // i.votes = issueVotes
-      })
+      });
       res.status(200).json({
         error: false,
         message: "Issues fetched successfully",
@@ -24,11 +24,11 @@ issues.get("/", (req, res) => {
 });
 
 issues.get("/:id", (req, res) => {
-  db.get(req.params.id)
+  issuesModel.get(req.params.id)
     .then(([issue, allVotes]) => {
-      const issueVotes = allVotes.filter(v => v.issue_id === issue.issue_id)
-      issue.total_votes = issueVotes.length
-      issue.votes = issueVotes
+      const issueVotes = allVotes.filter(v => v.issue_id === issue.issue_id);
+      issue.total_votes = issueVotes.length;
+      issue.votes = issueVotes;
       res.status(200).json({
         error: false,
         message: "Issues fetched successfully",
@@ -43,7 +43,7 @@ issues.get("/:id", (req, res) => {
 });
 
 issues.post("/", issueBodyValidator, restricted, (req, res) => {
-  db.add(req.valIssue)
+  issuesModel.add(req.valIssue)
     .then(issue => {
       res.status(201).json({
         error: false,
@@ -61,7 +61,7 @@ issues.post("/", issueBodyValidator, restricted, (req, res) => {
 });
 
 issues.delete("/:id", issueIdValidator, restricted, (req, res) => {
-  db.remove(req.params.id).then(flag => {
+  issuesModel.remove(req.params.id).then(flag => {
     if (flag) {
       res.status(200).json({
         error: false,
@@ -72,18 +72,24 @@ issues.delete("/:id", issueIdValidator, restricted, (req, res) => {
   });
 });
 
-issues.put("/:id", issueIdValidator, issueBodyValidator, restricted, (req, res) => {
-  db.update(req.params.id, req.valIssue).then(issue => {
-    res
-      .status(200)
-      .json({ error: false, message: "Updated successfully", data: issue });
-  });
-});
+issues.put(
+  "/:id",
+  issueIdValidator,
+  issueBodyValidator,
+  restricted,
+  (req, res) => {
+    issuesModel.update(req.params.id, req.valIssue).then(issue => {
+      res
+        .status(200)
+        .json({ error: false, message: "Updated successfully", data: issue });
+    });
+  }
+);
 
 function issueIdValidator(req, res, next) {
   const { id } = req.params;
 
-  db.get(id)
+  issuesModel.get(id)
     .then(issue => {
       if (issue) {
         req.valIdIssue = issue;

@@ -5,6 +5,7 @@ module.exports = {
   removeVote,
   getWhere,
   getCount,
+  getAllVotes,
 };
 
 function createVote(user_id, issue_id) {
@@ -16,6 +17,10 @@ function removeVote(user_id, issue_id) {
     .where("issue_id", issue_id)
     .where("user_id", user_id)
     .del();
+}
+
+function getAllVotes(){
+    return db('votes')
 }
 
 function getCount(filter){

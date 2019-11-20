@@ -4,7 +4,12 @@ const restricted = require("../utils/restrictedMiddleware");
 
 issues.get("/", (req, res) => {
   db.get()
-    .then(issues => {
+    .then(([issues, allVotes]) => {
+      issues.forEach(i => {
+        const issueVotes = allVotes.filter(v => v.issue_id === i.issue_id)
+        i.total_votes = issueVotes.length
+        // i.votes = issueVotes
+      })
       res.status(200).json({
         error: false,
         message: "Issues fetched successfully",

@@ -1,11 +1,12 @@
 const db = require("../database/dbConfig");
+const votesModel = require('../votes/votesModel')
 
 function get(id) {
   let query = db("issues as i");
 
   if (id) query.where("i.issue_id", id).first();
 
-  return query;
+  return Promise.all([query, votesModel.getAllVotes()]);
 }
 
 function add(issue) {

@@ -23,6 +23,25 @@ issues.get("/", (req, res) => {
     );
 });
 
+issues.get("/:id", (req, res) => {
+  db.get(req.params.id)
+    .then(([issue, allVotes]) => {
+      const issueVotes = allVotes.filter(v => v.issue_id === issue.issue_id)
+      issue.total_votes = issueVotes.length
+      issue.votes = issueVotes
+      res.status(200).json({
+        error: false,
+        message: "Issues fetched successfully",
+        data: issue
+      });
+    })
+    .catch(err =>
+      res
+        .status(500)
+        .json({ error: true, message: `An error occurred: ${err.message}` })
+    );
+});
+
 issues.post("/", issueBodyValidator, restricted, (req, res) => {
   db.add(req.valIssue)
     .then(issue => {

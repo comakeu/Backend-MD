@@ -7,7 +7,7 @@ module.exports = {
 };
 
 function createVote(user_id, issue_id) {
-  return db("votes").insert({ issue_id, user_id });
+  return db("votes").insert({ issue_id, user_id }, 'id');
 }
 
 function removeVote(user_id, issue_id) {

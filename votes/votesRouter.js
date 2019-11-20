@@ -7,12 +7,28 @@ votes.post("/", restricted, (req, res) => {
   const issue_id = req.body.issue_id;
 
   db.createVote(user_id, issue_id)
-    .then(returns => res.status(201).json(returns))
-    .catch(err =>
-      res
-        .status(500)
-        .json({ error: true, message: "Failed to vote", data: err })
-    );
+    .then(() => {
+        db.getCount({ issue_id }).then(votes => {
+            votes.issue_id = issue_id;
+            res
+              .status(201)
+              .json({ error: false, message: "Vote successful", data: votes });
+          });
+    })
+    .catch(err => {
+      if (err.errno === 19) {
+        res
+          .status(500)
+          .json({
+            error: true,
+            message: `Failed. User ${user_id} might have already voted for this issue`
+          });
+      } else {
+        res
+          .status(500)
+          .json({ error: true, message: "Failed to vote", data: err });
+      }
+    });
 });
 
-module.exports = votes
+module.exports = votes;

@@ -14,3 +14,5 @@ votes.post("/", restricted, (req, res) => {
         .json({ error: true, message: "Failed to vote", data: err })
     );
 });
+
+module.exports = votes

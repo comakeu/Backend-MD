@@ -11,13 +11,13 @@ userRouter.get("/profile", restricted, (req, res) => {
   });
 });
 
-userRouter.delete("profile", restricted, (req, res) => {
+userRouter.delete("/profile", restricted, (req, res) => {
   const id = req.decodedToken.subject;
 
   db.remove(id).then(flag => res.status(200).json(flag));
 });
 
-userRouter.put("profile", bodyVal, restricted, (req, res) => {
+userRouter.put("/profile", bodyVal, restricted, (req, res) => {
   const id = req.decodedToken.subject;
 
   db.update(id, req.valHasheduser).then(flag => res.status(200).json(flag));

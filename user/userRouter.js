@@ -29,7 +29,7 @@ userRouter.delete("/profile", restricted, (req, res) => {
           message: `Deleted user ${first_name} ${last_name}`
         });
       } else {
-        res.status(500).json({
+        res.status(200).json({
           error: true,
           message: `Failed to delete user ${first_name}`
         });
